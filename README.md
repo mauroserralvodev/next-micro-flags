@@ -1,4 +1,5 @@
 # next-micro-flags
+NPM: https://www.npmjs.com/package/next-micro-flags
 
 `next-micro-flags` is a tiny feature-flag system designed specifically for Next.js (App Router).  
 The goal is simple: give developers an easy way to enable or disable features per user, per rollout percentage or per environment, without adding external services or complicated setups.
