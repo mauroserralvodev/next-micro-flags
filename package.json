@@ -1,0 +1,56 @@
+{
+  "name": "next-micro-flags",
+  "version": "0.1.0",
+  "description": "Tiny, framework-aware feature flags for Next.js (App Router).",
+  "license": "MIT",
+  "author": "Mauro Serralvo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mauroserralvodev/next-micro-flags.git"
+  },
+  "homepage": "https://github.com/mauroserralvodev/next-micro-flags",
+  "bugs": {
+    "url": "https://github.com/mauroserralvodev/next-micro-flags/issues"
+  },
+  "type": "module",
+  "main": "lib/featureFlags/index.js",
+  "module": "lib/featureFlags/index.js",
+  "exports": {
+    ".": "./lib/featureFlags/index.js",
+    "./server": "./lib/featureFlags/next-server.js",
+    "./client": "./lib/featureFlags/next-client.jsx"
+  },
+  "files": [
+    "lib/featureFlags",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "nextjs",
+    "next",
+    "feature-flags",
+    "flags",
+    "rollout",
+    "ab-testing",
+    "react"
+  ],
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "echo \"No tests yet\""
+  },
+  "peerDependencies": {
+    "next": ">=13.4.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "next": "14.2.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.0"
+  }
+}
