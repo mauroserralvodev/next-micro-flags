@@ -1,18 +1,23 @@
 // /feature-flags.config.js
-// Definición declarativa de tus feature flags
 
 export const featureFlagsConfig = {
   newNavbar: {
     enabled: true,
-    rollout: 100,
+    rollout: 100
   },
   betaDashboard: {
     enabled: true,
-    rollout: 20,
+    rollout: 20
   },
   paymentsV2: {
     enabled: true,
     rollout: 100,
-    onlyUsers: ["user1", "user2", "user3"], 
+    onlyUsers: ["user1", "user2", "user3"]
   },
+  blackFridayBanner: {
+    enabled: true,
+    rollout: 100,
+    activeFrom: "2025-11-20T00:00:00Z",
+    activeUntil: "2025-11-27T23:59:59Z"
+  }
 };
