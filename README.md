@@ -1,21 +1,38 @@
 # next-micro-flags
 NPM: https://www.npmjs.com/package/next-micro-flags
+GITHUB: https://github.com/mauroserralvodev/next-micro-flags
 
-`next-micro-flags` is a tiny feature-flag system designed specifically for Next.js (App Router).  
-The goal is simple: give developers an easy way to enable or disable features per user, per rollout percentage or per environment, without adding external services or complicated setups.
+`next-micro-flags` is a tiny feature-flag system designed specifically for Next.js (App Router).
 
-The idea is very similar to what teams use internally in real products when they want to ship new features progressively, test things with specific users or keep unfinished work hidden until it's ready.
+The goal is simple: give developers an easy and predictable way to enable or disable features per user, per rollout percentage, per environment or within a specific time window, without external services or complex setups.
+
+This follows the same patterns real teams use to ship features progressively, test things safely and keep unfinished work hidden until it’s ready.
 
 ## Why this exists
 
-Next.js apps often need to run A/B tests, progressive rollouts or show experimental features only to certain users. Most people end up hardcoding conditions or using environment variables, which doesn’t scale and usually doesn’t work on the client side.
+Sooner or later, every Next.js app needs feature flags.
 
-This package solves that by evaluating all feature flags in a middleware (per request) and passing them through headers into your server and client components. From there, you just call a simple hook to decide what to render.
+New features need to be rolled out gradually.  
+Some features should only be visible to internal users.  
+Others should only run in development or staging.  
+Temporary features (like promotions or banners) should turn on and off automatically.
+
+Most projects end up hardcoding conditions or abusing environment variables, which quickly becomes messy and doesn’t work well on the client side.
+
+This package solves that by evaluating feature flags once per request (in middleware) and making the result available everywhere: server components, client components and the UI.
 
 ## How it works
 
-You define your flags in a single `feature-flags.config.js` file.  
-Each flag can be globally enabled, limited to a percentage of users or restricted to a list of specific user IDs. The middleware evaluates everything and exposes the results to your app.
+You define your flags in a single `feature-flags.config.js` file.
+
+Each flag can:
+- be globally enabled or disabled
+- roll out to a percentage of users
+- be restricted to a list of specific users
+- be active only in certain environments
+- be active only within a specific date range
+
+The middleware evaluates all flags for the current request and exposes the results to your app. From there, you just read a boolean and render accordingly.
 
 Example config:
 
@@ -33,35 +50,47 @@ export const featureFlagsConfig = {
     enabled: true,
     rollout: 100,
     onlyUsers: ["user1", "user2"]
+  },
+  devOnlyBanner: {
+    enabled: true,
+    rollout: 100,
+    onlyInEnv: ["development"]
+  },
+  blackFridayBanner: {
+    enabled: true,
+    rollout: 100,
+    activeFrom: "2025-11-20T00:00:00Z",
+    activeUntil: "2025-11-27T23:59:59Z"
   }
 };
 ```
-In the UI you can check a flag with:
+In the UI you check a flag like this:
 
 ```js
 const showNewNavbar = useFeatureFlag("newNavbar");
 ```
-If it's true, you show the new component. If not, you keep the old one. Nothing else to think about.
+If it’s true, you render the new component. If not, you keep the old one. Nothing else to think about.
 
 ## What problems it solves
 
-You can roll out a new feature to 10% of users without touching your code again.
-You can give access to a beta dashboard only to a few internal users.
-You can hide unfinished work behind a flag until you decide it's ready.
-You can activate features only on development or staging if you want.
-You no longer need to depend on environment variables for UI-related logic.
+You can roll out a new feature to 10% of users and increase it gradually without redeploying.
+You can expose experimental features only to internal users.
+You can keep unfinished work in production without anyone seeing it.
+You can safely restrict features to development or staging environments.
+You can activate features automatically for a limited period of time.
+You avoid spreading environment checks and conditional logic across your UI.
 
 Everything stays predictable, minimal and fully under your control.
 
 ## Quick overview of the pieces
 
-A small middleware evaluates the flags for each request.
-The evaluated flags are encoded into a header.
-The root layout reads that header on the server.
-The <FlagsProvider> exposes the flags to the client through context.
-You read the flag with a hook and render whatever you want.
+A small middleware evaluates all feature flags per request.
+The evaluated flags are encoded into a request header.
+The root layout reads those flags on the server.
+The <FlagsProvider> exposes them to the client through context.
+Client components read flags using a simple hook and render accordingly.
 
-Nothing more than that. No external API. No dashboard. No analytics. Just a lightweight mechanism that solves the basic needs of feature flagging inside Next.js.
+No external API. No dashboard. No analytics. Just a lightweight mechanism that covers the most common feature-flag use cases in Next.js.
 
 ## License
 
