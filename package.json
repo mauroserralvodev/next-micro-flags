@@ -1,6 +1,6 @@
 {
   "name": "next-micro-flags",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tiny, framework-aware feature flags for Next.js (App Router).",
   "license": "MIT",
   "author": "Mauro Serralvo",
