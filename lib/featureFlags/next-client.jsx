@@ -23,3 +23,7 @@ export function useFeatureFlag(name) {
   const flags = useFeatureFlags();
   return !!flags[name];
 }
+
+export function getFeatureFlags() {
+  return useFeatureFlags();
+}
