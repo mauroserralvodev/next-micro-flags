@@ -1,40 +1,42 @@
 # next-micro-flags
-NPM: https://www.npmjs.com/package/next-micro-flags
+
+NPM: https://www.npmjs.com/package/next-micro-flags  
 GITHUB: https://github.com/mauroserralvodev/next-micro-flags
 
-`next-micro-flags` is a tiny feature-flag system designed specifically for Next.js (App Router).
+`next-micro-flags` is a lightweight feature flag utility designed for Next.js applications using the App Router.
 
-The goal is simple: give developers an easy and predictable way to enable or disable features per user, per rollout percentage, per environment or within a specific time window, without external services or complex setups.
+It provides a structured way to evaluate feature flags per request and make the results available consistently across middleware, server components and client components. The library focuses on predictable behavior, minimal configuration and zero external dependencies.
 
-This follows the same patterns real teams use to ship features progressively, test things safely and keep unfinished work hidden until it’s ready.
+## Purpose
 
-## Why this exists
+Feature flags are commonly required in production Next.js applications to control feature availability, reduce rollout risk and manage experimental or temporary functionality.
 
-Sooner or later, every Next.js app needs feature flags.
+Typical use cases include:
+- gradual rollouts of new features
+- restricting features to internal or test users
+- enabling features only in specific environments
+- activating features for a limited time window
+- keeping incomplete functionality deployed but inactive
 
-New features need to be rolled out gradually.  
-Some features should only be visible to internal users.  
-Others should only run in development or staging.  
-Temporary features (like promotions or banners) should turn on and off automatically.
+Many implementations rely on ad-hoc conditionals or environment variables, which tend to become difficult to maintain and are not well suited for client-side rendering.
 
-Most projects end up hardcoding conditions or abusing environment variables, which quickly becomes messy and doesn’t work well on the client side.
-
-This package solves that by evaluating feature flags once per request (in middleware) and making the result available everywhere: server components, client components and the UI.
+`next-micro-flags` addresses this by evaluating all feature flags once per request in middleware, performing basic configuration validation during development, and exposing the evaluated results to both server and client layers in a consistent way.
 
 ## How it works
 
-You define your flags in a single `feature-flags.config.js` file.
+Feature flags are defined in a single `feature-flags.config.js` file.
 
-Each flag can:
-- be globally enabled or disabled
-- roll out to a percentage of users
-- be restricted to a list of specific users
-- be active only in certain environments
-- be active only within a specific date range
+Each flag supports a combination of the following rules:
+- global enable or disable
+- percentage-based rollout
+- deterministic rollouts (the same user receives the same result)
+- restriction to a list of specific users
+- restriction to specific environments
+- activation within a defined time range
 
-The middleware evaluates all flags for the current request and exposes the results to your app. From there, you just read a boolean and render accordingly.
+The middleware evaluates all flags for the current request and forwards the resolved values to the application. Components then consume these values as simple booleans.
 
-Example config:
+Example configuration:
 
 ```js
 export const featureFlagsConfig = {
@@ -64,33 +66,32 @@ export const featureFlagsConfig = {
   }
 };
 ```
-In the UI you check a flag like this:
+
+In the UI, a flag is checked using a simple hook:
 
 ```js
 const showNewNavbar = useFeatureFlag("newNavbar");
 ```
-If it’s true, you render the new component. If not, you keep the old one. Nothing else to think about.
+Rendering logic remains explicit and local to the component.
 
-## What problems it solves
 
-You can roll out a new feature to 10% of users and increase it gradually without redeploying.
-You can expose experimental features only to internal users.
-You can keep unfinished work in production without anyone seeing it.
-You can safely restrict features to development or staging environments.
-You can activate features automatically for a limited period of time.
-You avoid spreading environment checks and conditional logic across your UI.
+## Behavior and guarantees
 
-Everything stays predictable, minimal and fully under your control.
+Flag evaluation is performed once per request.
+Rollouts are deterministic when a stable identifier is available.
+Misconfigured flags produce warnings in development but do not break execution.
+No runtime network calls are required.
+No client-side configuration parsing is performed.
+This keeps behavior predictable and avoids hidden side effects.
 
-## Quick overview of the pieces
+## Internal flow overview
 
-A small middleware evaluates all feature flags per request.
-The evaluated flags are encoded into a request header.
-The root layout reads those flags on the server.
-The <FlagsProvider> exposes them to the client through context.
-Client components read flags using a simple hook and render accordingly.
+Middleware evaluates all feature flags for the incoming request.
+The evaluated flag set is serialized into a request header.
+The root layout reads the evaluated flags on the server.
+The <FlagsProvider> exposes them to the client through React context.
+Client components read flag values using hooks and render accordingly.
 
-No external API. No dashboard. No analytics. Just a lightweight mechanism that covers the most common feature-flag use cases in Next.js.
 
 ## License
 
