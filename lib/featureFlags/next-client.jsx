@@ -24,6 +24,16 @@ export function useFeatureFlag(name) {
   return !!flags[name];
 }
 
+export function getFeatureFlag(name, defaultValue = false) {
+  const flags = useFeatureFlags();
+
+  if (!(name in flags)) {
+    return defaultValue;
+  }
+
+  return !!flags[name];
+}
+
 export function getFeatureFlags() {
   return useFeatureFlags();
 }
